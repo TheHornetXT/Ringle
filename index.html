@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ringle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff0000;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            text-align: center;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .create-btn-top {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .create-btn-top:hover {
+            background-color: #cc0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #cc0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        .search-bar {
+            background-color: #1a1a1a;
+            border: 2px solid #ff0000;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 300px;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            margin: 50px auto;
+            padding: 30px;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            color: #ff0000;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: #000;
+            border: 1px solid #ff0000;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .websites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .website-card {
+            background-color: #1a1a1a;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .website-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .website-card h3 {
+            color: #ff0000;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .website-card p {
+            color: #ccc;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .website-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .website-card .timestamp {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .view-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .view-modal-content {
+            background-color: #1a1a1a;
+            margin: 50px auto;
+            padding: 40px;
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .view-modal-content h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .view-modal-content .content {
+            color: #fff;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+
+        .view-modal-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #888;
+            margin-top: 50px;
+            font-size: 1.2em;
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background-color: #1a1a1a;
+            border: 2px solid #ff0000;
+            color: #fff;
+            padding: 10px 25px;
+        }
+
+        .tab-btn.active {
+            background-color: #ff0000;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ringle</h1>
+            <button class="create-btn-top" id="createBtn">create site</button>
+        </div>
+        <p class="subtitle">best place for math answers, or 40 year old dudes idk👍in nms</p>
+        
+        <div class="controls">
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search websites...">
+        </div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" id="forYouTab">For You</button>
+            <button class="tab-btn" id="allTab">all sites</button>
+        </div>
+
+        <div class="websites-grid" id="websitesGrid"></div>
+        <div class="no-results" id="noResults" style="display: none;">No websites found</div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Create Your Website</h2>
+            <form id="websiteForm">
+                <div class="form-group">
+                    <label for="title">Website Title</label>
+                    <input type="text" id="title" required placeholder="Enter a catchy title...">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" required placeholder="Write your content here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image URL (optional)</label>
+                    <input type="url" id="image" placeholder="https://example.com/image.jpg">
+                    <img id="imagePreview" class="image-preview" alt="Preview">
+                </div>
+                <div class="form-group">
+                    <label for="bgColor">Background Color</label>
+                    <input type="color" id="bgColor" value="#1a1a1a">
+                </div>
+                <div class="form-group">
+                    <label for="textColor">Text Color</label>
+                    <input type="color" id="textColor" value="#ffffff">
+                </div>
+                <div class="form-group">
+                    <label for="titleColor">Title Color</label>
+                    <input type="color" id="titleColor" value="#ff0000">
+                </div>
+                <button type="submit">Publish Website</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div class="view-modal" id="viewModal">
+        <div class="view-modal-content">
+            <span class="close" id="closeViewModal">&times;</span>
+            <h2 id="viewTitle"></h2>
+            <div class="content" id="viewContent"></div>
+            <img id="viewImage" style="display: none;" alt="Website image">
+            <div class="timestamp" id="viewTimestamp"></div>
+        </div>
+    </div>
+
+    <script>
+        // JSONBin.io Configuration
+        // Get your free API key at https://jsonbin.io
+        // Create a new bin and paste the bin ID below
+        const JSONBIN_BIN_ID = 'YOUR_BIN_ID_HERE'; // Replace with your bin ID
+        const JSONBIN_API_KEY = '$2a$10$YOUR_API_KEY_HERE'; // Replace with your API key
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+        
+        // Storage for websites
+        let websites = [];
+        let currentTab = 'forYou';
+
+        // Elements
+        const createBtn = document.getElementById('createBtn');
+        const createModal = document.getElementById('createModal');
+        const closeModal = document.getElementById('closeModal');
+        const websiteForm = document.getElementById('websiteForm');
+        const websitesGrid = document.getElementById('websitesGrid');
+        const searchBar = document.getElementById('searchBar');
+        const viewModal = document.getElementById('viewModal');
+        const closeViewModal = document.getElementById('closeViewModal');
+        const noResults = document.getElementById('noResults');
+        const forYouTab = document.getElementById('forYouTab');
+        const allTab = document.getElementById('allTab');
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Fetch websites from JSONBin
+        async function fetchWebsites() {
+            try {
+                const response = await fetch(`${JSONBIN_URL}/latest`, {
+                    headers: {
+                        'X-Access-Key': JSONBIN_API_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    websites = data.record.websites || [];
+                    displayWebsites();
+                } else {
+                    console.error('Failed to fetch websites');
+                    // Fallback to localStorage if JSONBin fails
+                    websites = JSON.parse(localStorage.getItem('websites')) || [];
+                    displayWebsites();
+                }
+            } catch (error) {
+                console.error('Error fetching websites:', error);
+                // Fallback to localStorage
+                websites = JSON.parse(localStorage.getItem('websites')) || [];
+                displayWebsites();
+            }
+        }
+
+        // Save websites to JSONBin
+        async function saveWebsites() {
+            try {
+                const response = await fetch(JSONBIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Access-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify({ websites: websites })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to save to JSONBin, saving locally');
+                    localStorage.setItem('websites', JSON.stringify(websites));
+                }
+            } catch (error) {
+                console.error('Error saving websites:', error);
+                // Fallback to localStorage
+                localStorage.setItem('websites', JSON.stringify(websites));
+            }
+        }
+
+        // Image preview
+        imageInput.addEventListener('input', function() {
+            if (this.value) {
+                imagePreview.src = this.value;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+
+        // Open create modal
+        createBtn.addEventListener('click', () => {
+            createModal.style.display = 'block';
+        });
+
+        // Close modals
+        closeModal.addEventListener('click', () => {
+            createModal.style.display = 'none';
+            websiteForm.reset();
+            imagePreview.style.display = 'none';
+        });
+
+        closeViewModal.addEventListener('click', () => {
+            viewModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === createModal) {
+                createModal.style.display = 'none';
+                websiteForm.reset();
+                imagePreview.style.display = 'none';
+            }
+            if (e.target === viewModal) {
+                viewModal.style.display = 'none';
+            }
+        });
+
+        // Tab switching
+        forYouTab.addEventListener('click', () => {
+            currentTab = 'forYou';
+            forYouTab.classList.add('active');
+            allTab.classList.remove('active');
+            displayWebsites();
+        });
+
+        allTab.addEventListener('click', () => {
+            currentTab = 'all';
+            allTab.classList.add('active');
+            forYouTab.classList.remove('active');
+            displayWebsites();
+        });
+
+        // Submit form
+        websiteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newWebsite = {
+                id: Date.now(),
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                image: document.getElementById('image').value,
+                bgColor: document.getElementById('bgColor').value,
+                textColor: document.getElementById('textColor').value,
+                titleColor: document.getElementById('titleColor').value,
+                timestamp: new Date().toLocaleString()
+            };
+
+            websites.unshift(newWebsite);
+            await saveWebsites();
+            
+            createModal.style.display = 'none';
+            websiteForm.reset();
+            imagePreview.style.display = 'none';
+            displayWebsites();
+        });
+
+        // Search functionality
+        let searchTimeout;
+        searchBar.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchTerm = e.target.value.toLowerCase();
+                displayWebsites(searchTerm);
+            }, 300);
+        });
+
+        // Display websites
+        function displayWebsites(searchTerm = '') {
+            let filteredWebsites = websites;
+
+            // Filter by search term
+            if (searchTerm) {
+                filteredWebsites = websites.filter(site => 
+                    site.title.toLowerCase().includes(searchTerm) ||
+                    site.content.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Sort based on tab
+            if (currentTab === 'forYou') {
+                // For You shows most recent first
+                filteredWebsites = [...filteredWebsites].sort((a, b) => b.id - a.id);
+            }
+
+            websitesGrid.innerHTML = '';
+            
+            if (filteredWebsites.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+
+            filteredWebsites.forEach(site => {
+                const card = document.createElement('div');
+                card.className = 'website-card';
+                card.style.backgroundColor = site.bgColor || '#1a1a1a';
+                
+                const preview = site.content.length > 150 
+                    ? site.content.substring(0, 150) + '...' 
+                    : site.content;
+
+                card.innerHTML = `
+                    <h3 style="color: ${site.titleColor || '#ff0000'}">${site.title}</h3>
+                    <p style="color: ${site.textColor || '#ccc'}">${preview}</p>
+                    ${site.image ? `<img src="${site.image}" alt="${site.title}">` : ''}
+                    <div class="timestamp">Posted: ${site.timestamp}</div>
+                `;
+
+                card.addEventListener('click', () => viewWebsite(site));
+                websitesGrid.appendChild(card);
+            });
+        }
+
+        // View website
+        function viewWebsite(site) {
+            const viewContent = document.getElementById('viewModal').querySelector('.view-modal-content');
+            viewContent.style.backgroundColor = site.bgColor || '#1a1a1a';
+            
+            const titleEl = document.getElementById('viewTitle');
+            titleEl.textContent = site.title;
+            titleEl.style.color = site.titleColor || '#ff0000';
+            
+            const contentEl = document.getElementById('viewContent');
+            contentEl.textContent = site.content;
+            contentEl.style.color = site.textColor || '#fff';
+            
+            document.getElementById('viewTimestamp').textContent = `Posted: ${site.timestamp}`;
+            
+            const viewImage = document.getElementById('viewImage');
+            if (site.image) {
+                viewImage.src = site.image;
+                viewImage.style.display = 'block';
+            } else {
+                viewImage.style.display = 'none';
+            }
+
+            viewModal.style.display = 'block';
+        }
+
+        // Initial fetch
+        fetchWebsites();
+        
+        // Auto-refresh every 10 seconds to show new websites from other users
+        setInterval(fetchWebsites, 10000);
+    </script>
+</body>
+</html>
